@@ -1,49 +1,33 @@
-#!/usr/bin/env bash
-# is a factors challenge
+#include "factor.h"
 
-check_factor()
+/**
+ * main - main function
+ *
+ *
+ * Return: void
+ */
+int main(int argc, char *argv[])
 {
-	if [ $# -ne 3 ];
-        then
-                args=("$@")
-                my_count=0
-                num2=1
-                for a in ${args[*]};
-                do
-                        if [ $my_count -gt 1 ];
-                        then
-                                num2=$(echo $a*$num2 | bc)
-                        fi
-                        my_count=$((my_count + 1))
-                done
-        else
-                num2=$3
-        fi
+	FILE *fptr;
+	size_t my_count;
+	ssize_t my_count;
+	char *buffer = NULL;
 
-        num1=$2
-        num=$(echo "$1" | tr ':' '=')
 
-        result=$(echo "if($num2 > $num1) 1 else 0" | bc)
-	        if ((result == 1)); then
-		        numcp=$num1
-		        num1=$num2
-		        num2=$numcp
-                fi
-
-        echo "$num$num1*$num2"
+	if (argc != 2)
+	{
+		fprintf(stderr, "Usage: factor <filename>\n");
+		exit(EXIT_FAILURE);
+	}
+	fptr = fopen(argv[1], "r");
+	if (fptr == NULL)
+	{
+		fprintf(stderr, "Error: can't open file %s\n", argv[1]);
+		exit(EXIT_FAILURE);
+	}
+	while((my_count = getmy_count(&buffer, &my_count, fptr)) != -1)
+	{
+		factorize(buffer);
+	}
+	return (0);
 }
-
-if [ $# -ne 1 ]
-then
-        echo 'Usage: factors <file>'
-        exit 1
-else
-
-        while read i
-        do
-
-                result=$(factor "$i")
-                check_factor $result
-
-        done < "$1"
-fi
